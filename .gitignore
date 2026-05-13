@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+
+track/
+*.h5
+*.keras
+models/*.json
+!models/.gitkeep
+
+.env
