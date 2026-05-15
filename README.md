@@ -6,6 +6,8 @@ End-to-end neural network that maps a forward-facing camera frame to a steering 
 Camera frame ──► crop ──► YUV ──► blur ──► resize 200×66 ──► /255 ──► CNN ──► steering angle
 ```
 
+> 📄 **Technical report.** The methodology — the corrected temporal models, the leak-free contiguous-split evaluation, and the negative result on recurrent architectures — is written up as a short paper in [`paper/`](paper/) (LaTeX; compile on Overleaf, see [`paper/README.md`](paper/README.md)).
+
 ## Results
 
 ### NVIDIA CNN vs. the thesis
