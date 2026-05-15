@@ -87,3 +87,66 @@ def batch_generator(
             batch_imgs[i] = preprocess(img)
             batch_steerings[i] = steering
         yield batch_imgs, batch_steerings
+
+
+def augment_window(
+    images: list[np.ndarray], steering: float, rng: np.random.Generator
+) -> tuple[list[np.ndarray], float]:
+    """Augment a temporal window — the SAME transform on every frame.
+
+    A window is a contiguous run of frames, so the augmentation must be locked
+    across it: zooming frame 3 but not frame 4, or flipping only half a window,
+    would destroy the temporal signal the LSTM is meant to learn. We draw the
+    augmentation decisions once and apply them to all frames. `to_deterministic`
+    freezes each imgaug augmenter's random parameters so it repeats identically.
+    """
+    ops = []
+    if rng.random() < 0.5:
+        ops.append(_PAN.to_deterministic())
+    if rng.random() < 0.5:
+        ops.append(_ZOOM.to_deterministic())
+    if rng.random() < 0.5:
+        ops.append(_BRIGHTNESS.to_deterministic())
+    do_flip = rng.random() < 0.5
+
+    out: list[np.ndarray] = []
+    for img in images:
+        for op in ops:
+            img = op.augment_image(img)
+        if do_flip:
+            img = cv2.flip(img, 1)
+        out.append(img)
+    if do_flip:
+        steering = -steering
+    return out, steering
+
+
+def sequence_batch_generator(
+    windows: np.ndarray,
+    steerings: np.ndarray,
+    batch_size: int,
+    training: bool,
+    seq_len: int = 10,
+    seed: int | None = None,
+) -> Iterator[tuple[np.ndarray, np.ndarray]]:
+    """Yield infinite (X, y) batches of temporal windows for the LSTM models.
+
+    X has shape `(batch_size, seq_len, 66, 200, 3)`. Each row of `windows` is a
+    list of `seq_len` image paths (built by `bc.sequence`). Training augments
+    each window as a unit; validation only loads and preprocesses.
+    """
+    rng = np.random.default_rng(seed)
+    n = len(windows)
+    while True:
+        idxs = rng.integers(0, n, size=batch_size)
+        batch = np.empty((batch_size, seq_len, 66, 200, 3), dtype=np.float32)
+        batch_steerings = np.empty(batch_size, dtype=np.float32)
+        for i, idx in enumerate(idxs):
+            frames = [mpimg.imread(p) for p in windows[idx]]
+            steering = float(steerings[idx])
+            if training:
+                frames, steering = augment_window(frames, steering, rng)
+            for t, frame in enumerate(frames):
+                batch[i, t] = preprocess(frame)
+            batch_steerings[i] = steering
+        yield batch, batch_steerings

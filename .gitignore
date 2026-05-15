@@ -8,6 +8,7 @@ track/
 *.h5
 *.keras
 models/*.json
+models/*.log
 !models/.gitkeep
 
 .env
