@@ -8,13 +8,16 @@
 \usepackage{graphicx}
 \usepackage{natbib}
 \usepackage[hidelinks]{hyperref}
+% microtype evens out inter-word spacing in justified text (character
+% protrusion + font expansion) — the standard fix for uneven gaps.
+\usepackage{microtype}
 
 \title{\textbf{Behavioral Cloning for Self-Driving Cars:\\
 A Leak-Free Re-evaluation and a Negative Result on Temporal Models}}
 
 \author{Aly Elgemei\\
   Independent Researcher, Siegen, Germany\\
-  \texttt{github.com/ali7996/behavioral-cloning-thesis}}
+  \url{https://github.com/ali7996/behavioral-cloning-thesis}}
 
 \date{2026}
 
@@ -195,8 +198,9 @@ then summarizes. The corrected model has $1{,}105{,}701$ parameters.
 \subsection{Training on real sequences}
 
 In the original code, the two recurrent models were trained not on driving data but
-on an array of uniform random noise --- effectively
-\texttt{numpy.random.random((4389, 10, 66, 200, 3))} --- paired with the real
+on an array of uniform random noise --- in effect, a call to
+\texttt{numpy.random.random} producing a tensor of shape
+$4389 \times 10 \times 66 \times 200 \times 3$ --- paired with the real
 steering labels. A network trained on random inputs cannot learn an input--output
 mapping, so the LSTM and 2D-CNN+LSTM metrics reported in the thesis do not measure
 learning from driving data. Notably, those metrics were \emph{better} than the
@@ -252,7 +256,7 @@ convolutional baseline roughly halves the error the thesis reported
 \centering
 \caption{Convolutional baseline under the thesis's own random-split protocol.}
 \label{tab:repro}
-\begin{tabular}{lcccc}
+\begin{tabular}{lrrrr}
 \toprule
  & MSE & MAE & RMSE & $R^2$ \\
 \midrule
@@ -276,7 +280,7 @@ parameters.
 \caption{All three models on the same leak-free contiguous validation set
 ($2{,}406$ windows). Lower is better for MSE/MAE/RMSE; higher is better for $R^2$.}
 \label{tab:main}
-\begin{tabular}{lccccc}
+\begin{tabular}{lrrrrr}
 \toprule
 Model & Parameters & MSE & MAE & RMSE & $R^2$ \\
 \midrule
@@ -303,7 +307,7 @@ variance, is the meaningful cross-split quantity.)
 \caption{The same convolutional model evaluated under two splits. The random split
 inflates the apparent fit.}
 \label{tab:leak}
-\begin{tabular}{lccc}
+\begin{tabular}{lrrr}
 \toprule
 Split & Validation frames & RMSE & $R^2$ \\
 \midrule
@@ -361,7 +365,7 @@ temporal models fail to beat a constant predictor. The contribution is not a new
 method but a demonstration that disciplined, leak-free evaluation of a small and
 familiar task yields a clear, reportable, and initially counter-intuitive finding.
 All code, trained weights, and evaluation scripts are available at
-\texttt{github.com/ali7996/behavioral-cloning-thesis}.
+\url{https://github.com/ali7996/behavioral-cloning-thesis}.
 
 \paragraph{Reproducibility.}
 The repository contains the data pipeline, all three model definitions, training and
