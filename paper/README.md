@@ -23,5 +23,6 @@ pdflatex main && bibtex main && pdflatex main && pdflatex main
 
 ## Files
 
+- `behavioral-cloning-report.pdf` — the compiled paper (ready to read)
 - `main.tex` — the paper source
 - `refs.bib` — bibliography (Bojarski 2016, Codevilla 2018/2019, Pomerleau 1989, Hochreiter & Schmidhuber 1997, Kingma & Ba 2015)
