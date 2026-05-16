@@ -142,5 +142,5 @@ behavioral-cloning-thesis/
 
 ## Author
 
-**Aly Elgemei** — AI & Automation Developer · MSc Data Science & AI · PhD Applicant
+**Aly Elgemei** — AI & Automation Developer · MSc Data Science & AI.
 [GitHub: @ali7996](https://github.com/ali7996) · Siegen, Germany
