@@ -27,7 +27,7 @@ A Leak-Free Re-evaluation and a Negative Result on Temporal Models}}
 \begin{abstract}
 Behavioral cloning trains a neural network to imitate a human driver by mapping a
 forward-facing camera image to a steering command. We revisit the practical
-component of a 2023 Master's thesis on this task~\citep{elgemei2023behavioral} and
+component of a 2023 Master's thesis on this task~\mbox{\citep{elgemei2023behavioral}} and
 report a corrected, honestly-evaluated reproduction. Three issues are identified and
 addressed. First, the thesis's two recurrent models were inadvertently trained on
 uniform random noise rather than on driving data; we retrain them on real ten-frame
@@ -50,12 +50,12 @@ prediction. All code, trained weights, and evaluation scripts are public.
 End-to-end behavioral cloning is the oldest and simplest paradigm for vision-based
 autonomous driving: a neural network is trained, by supervised regression, to
 reproduce the control output of a human demonstrator directly from raw camera
-input~\citep{pomerleau1989alvinn,bojarski2016end}. It requires no hand-engineered
+input~\mbox{\citep{pomerleau1989alvinn,bojarski2016end}}. It requires no hand-engineered
 perception stack and no explicit map, which makes it an attractive teaching and
 benchmarking task --- and a frequent subject of student projects and theses.
 
 This paper revisits one such project: the practical component of a 2023 Master's
-thesis~\citep{elgemei2023behavioral} that implemented and compared three
+thesis~\mbox{\citep{elgemei2023behavioral}} that implemented and compared three
 architectures for predicting the steering angle of a car in the Udacity driving
 simulator. While re-examining the original code in order to publish it, we found
 methodological flaws that invalidated part of the thesis's reported results. Rather
@@ -91,18 +91,18 @@ and familiar task can still produce a useful and non-obvious finding.
 \paragraph{End-to-end driving.}
 The idea of learning to steer directly from pixels dates to ALVINN, which trained a
 small fully-connected network to drive a vehicle from camera and range
-input~\citep{pomerleau1989alvinn}. The approach was revived at scale by NVIDIA's
+input~\mbox{\citep{pomerleau1989alvinn}}. The approach was revived at scale by NVIDIA's
 DAVE-2 system, in which a convolutional network maps a single front-facing camera
 frame to a steering command and learns useful road features without explicit
-supervision for them~\citep{bojarski2016end}. The architecture used in this paper is
+supervision for them~\mbox{\citep{bojarski2016end}}. The architecture used in this paper is
 the DAVE-2 network, and the dataset is generated in a driving simulator of the same
 family.
 
 \paragraph{Behavioral cloning and its limits.}
-Plain behavioral cloning is known to be brittle. \citet{codevilla2018end} show that
+Plain behavioral cloning is known to be brittle. \mbox{\citet{codevilla2018end}} show that
 an unconditioned policy cannot resolve the ambiguity of an intersection --- the same
 image admits a left or a right turn --- and condition the policy on a navigational
-command to fix this. \citet{codevilla2019exploring} further document that behavior
+command to fix this. \mbox{\citet{codevilla2019exploring}} further document that behavior
 cloning suffers from high variance across training seeds, sensitivity to dataset
 composition, and a driving-performance ceiling that more data does not lift. Our
 negative result on temporal models is consistent with this literature: behavior
@@ -110,7 +110,7 @@ cloning's difficulties are not obviously solved by adding model capacity or inpu
 context.
 
 \paragraph{Recurrent models for sequences.}
-Long Short-Term Memory networks~\citep{hochreiter1997long} are the standard tool for
+Long Short-Term Memory networks~\mbox{\citep{hochreiter1997long}} are the standard tool for
 modelling temporal dependencies, and it is natural to ask whether a short window of
 consecutive frames lets a driving model exploit motion that a single frame cannot.
 The thesis posed exactly this question. We show below that answering it requires
@@ -165,11 +165,11 @@ with probability $0.5$: random zoom, pan, brightness change, and horizontal flip
 \label{sec:models}
 
 We study three architectures. All are trained with the Adam
-optimizer~\citep{kingma2015adam} ($\text{lr}=10^{-3}$) and a mean-squared-error
+optimizer~\mbox{\citep{kingma2015adam}} ($\text{lr}=10^{-3}$) and a mean-squared-error
 loss.
 
 \paragraph{Convolutional baseline (single frame).}
-This is the DAVE-2 network~\citep{bojarski2016end}: five convolutional layers
+This is the DAVE-2 network~\mbox{\citep{bojarski2016end}}: five convolutional layers
 (filter counts $24$--$36$--$48$--$64$--$64$) followed by three fully-connected
 layers and a scalar output, with ELU activations and dropout. It has $252{,}219$
 trainable parameters and consumes one preprocessed $66\times200\times3$ frame.
@@ -177,7 +177,7 @@ trainable parameters and consumes one preprocessed $66\times200\times3$ frame.
 \paragraph{Flatten-LSTM (ten frames).}
 This is the thesis's recurrent design: a window of ten consecutive frames, each
 flattened to a $39{,}600$-dimensional vector, processed by two stacked
-LSTM~\citep{hochreiter1997long} layers of 128 units, then a dense head. Flattening
+LSTM~\mbox{\citep{hochreiter1997long}} layers of 128 units, then a dense head. Flattening
 the image discards all spatial structure and makes the first recurrent layer
 enormous; the model has $20{,}506{,}113$ parameters. We retain this design as-is so
 that the temporal experiment is a faithful correction of the thesis rather than a
@@ -261,7 +261,7 @@ convolutional baseline roughly halves the error the thesis reported
  & MSE & MAE & RMSE & $R^2$ \\
 \midrule
 This work (real data, random split) & 0.054 & \textbf{0.168} & \textbf{0.233} & 0.520 \\
-Thesis~\citep{elgemei2023behavioral}, reported & --- & 0.300 & 0.408 & --- \\
+Thesis~\mbox{\citep{elgemei2023behavioral}}, reported & --- & 0.300 & 0.408 & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
